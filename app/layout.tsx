@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
+import AnimatedBackground from "@/components/ui/AnimatedBackground";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VeriCert",
-  description: "Verifikasi ijazah atau sertifikat anda.",
+  title: "VeriCert | Blockchain Credentials",
+  description: "Issue and verify tamper-proof digital certificates.",
 };
 
 export default function RootLayout({
@@ -26,12 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <SupabaseProvider>
-      <html lang="en">
+      <html lang="en" className="dark">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
         >
+          <AnimatedBackground />
           <Navbar />
-          {children}
+
+          <main className="grow w-full">{children}</main>
         </body>
       </html>
     </SupabaseProvider>

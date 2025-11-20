@@ -1,37 +1,38 @@
 export enum UserRole {
-    ISSUER = "ISSUER",
-    VERIFIER = "VERIFIER",
-    NONE = "NONE",
+  ISSUER = "ISSUER",
+  VERIFIER = "VERIFIER",
+  NONE = "NONE",
 }
 
 export interface CertificateMetadata {
-    studentName: string;
-    studentId: string;
-    institution: string;
-    graduationDate: string;
-    degree: string;
-    gpa: string;
-    description?: string;
+  recipientName: string;
+  recipientId: string;
+  issuerName: string;
+  issueDate: string;
+  certificateTitle: string;
+  additionalInfo: string;
+  description?: string;
 }
 
 export interface CertificateRecord {
-    id: string;
-    hash: string;
-    metadata: CertificateMetadata;
-    timestamp: number;
-    txHash: string;
-    issuer: string;
+  id: string;
+  hash: string;
+  metadata: CertificateMetadata;
+  timestamp: number;
+  txHash: string;
+  issuer: string;
+  isValid?: boolean;
 }
 
 export interface VerificationResult {
-    isValid: boolean;
-    record?: CertificateRecord;
-    checkedAt: number;
+  isValid: boolean;
+  record?: CertificateRecord;
+  checkedAt: number;
 }
 
 export enum GemAIStatus {
-    IDLE = "IDLE",
-    ANALYZING = "ANALYZING",
-    SUCCESS = "SUCCESS",
-    ERROR = "ERROR",
+  IDLE = "IDLE",
+  ANALYZING = "ANALYZING",
+  SUCCESS = "SUCCESS",
+  ERROR = "ERROR",
 }
