@@ -38,7 +38,7 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
     };
 
     return (
-        <motion.div variants={itemVariants} className="w-full max-w-5xl mx-auto">
+        <motion.div variants={itemVariants} className="w-full max-w-full md:max-w-5xl overflow-x-auto mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                     <Database className="text-primary h-6 w-6" />
@@ -55,8 +55,8 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
                         <thead>
                             <tr className="bg-white/5 border-b border-white/10">
                                 <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Timestamp</th>
-                                <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Penerima</th>
-                                <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Judul Sertifikat</th>
+                                <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider hidden sm:table-cell">Penerima</th>
+                                <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider hidden md:table-cell">Judul Sertifikat</th>
                                 <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider">TX Hash</th>
                                 <th className="p-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Status</th>
                             </tr>
@@ -84,11 +84,11 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
                                             })} <br />
                                             <span className="text-gray-600">{new Date(record.timestamp).toLocaleTimeString()}</span>
                                         </td>
-                                        <td className="p-4">
+                                        <td className="p-4 hidden sm:table-cell">
                                             <p className="text-sm font-bold text-white">{maskName(record.metadata.name)}</p>
                                             <p className="text-xs text-gray-500">{record.metadata.institution}</p>
                                         </td>
-                                        <td className="p-4 text-sm text-gray-300">
+                                        <td className="p-4 text-sm text-gray-300 hidden md:table-cell">
                                             <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs border border-primary/20">
                                                 {record.metadata.achievment}
                                             </span>
