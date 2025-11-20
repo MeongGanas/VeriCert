@@ -25,6 +25,35 @@ import { calculateFileHash, issueCertificateAPI, getRecentCertificatesAPI } from
 import GlassCard from "@/components/ui/GlassCard";
 import NeonButton from "@/components/ui/NeonButton";
 import { motion, AnimatePresence } from "framer-motion";
+import { maskName } from "@/lib/maskname";
+
+const FormInput = ({
+  label,
+  value,
+  onChange,
+  type = "text",
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  type?: string;
+  placeholder?: string;
+}) => (
+  <div className="group">
+    <label className="block text-xs font-mono text-gray-500 mb-1 group-focus-within:text-primary transition-colors">
+      {label}
+    </label>
+    <input
+      type={type}
+      required
+      value={value}
+      onChange={onChange}
+      className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-700"
+      placeholder={placeholder}
+    />
+  </div>
+);
 
 const IssuerPage: React.FC = () => {
   const { supabase, session, isLoading } = useSupabase();
@@ -42,7 +71,7 @@ const IssuerPage: React.FC = () => {
     description: '',
     institution: '',
     eventDate: '',
-    achievment: ''
+    achievment: '',
   });
 
   useEffect(() => {
@@ -52,15 +81,13 @@ const IssuerPage: React.FC = () => {
   }, [session, isLoading, router]);
 
   const refreshHistory = async () => {
-    if (supabase) {
-      const data = await getRecentCertificatesAPI();
-      setHistory(data);
-    }
+    const response = await getRecentCertificatesAPI(1, 4)
+    setHistory(response.data);
   };
 
   useEffect(() => {
     refreshHistory();
-  }, [supabase]);
+  }, []);
 
   const handleFileSelection = async (selectedFile: File) => {
     setFile(selectedFile);
@@ -83,11 +110,12 @@ const IssuerPage: React.FC = () => {
       const details = await extractCertificateDetailsAPI(imageFile);
       setFormData((prev) => ({
         ...prev,
-        name: details.name || "",
-        achievment: details.achievment || "",
-        eventDate: details.eventDate || "",
-        institution: details.institution || "",
-        description: details.description || "",
+        name: details.name || prev.name,
+        achievment: details.achievment || prev.achievment,
+        eventDate: details.eventDate || prev.eventDate,
+        institution: details.institution || prev.institution,
+        description: details.description || prev.description,
+        // Serial number biasanya tidak diekstrak AI, tapi jika ada bisa ditambahkan
       }));
       setAiStatus(GemAIStatus.SUCCESS);
     } catch (error) {
@@ -104,11 +132,10 @@ const IssuerPage: React.FC = () => {
     try {
       const hash = await calculateFileHash(file);
 
-      const finalData = {
-        ...formData,
-      };
+      // Generate serial number jika kosong (opsional, tergantung logic Anda)
+      // const finalData = { ...formData, serialNumber: formData.serialNumber || generateSerial() };
 
-      await issueCertificateAPI(finalData, hash, session.user.id, file);
+      await issueCertificateAPI(formData, hash, session.user.id, file);
 
       setFile(null);
       setFormData({
@@ -116,7 +143,7 @@ const IssuerPage: React.FC = () => {
         description: '',
         institution: '',
         eventDate: '',
-        achievment: ''
+        achievment: '',
       });
       setAiStatus(GemAIStatus.IDLE);
       await refreshHistory();
@@ -127,28 +154,6 @@ const IssuerPage: React.FC = () => {
       setIsMinting(false);
     }
   };
-
-  const FormInput = ({
-    label,
-    value,
-    onChange,
-    type = "text",
-    placeholder,
-  }: any) => (
-    <div className="group">
-      <label className="block text-xs font-mono text-gray-500 mb-1 group-focus-within:text-primary transition-colors">
-        {label}
-      </label>
-      <input
-        type={type}
-        required
-        value={value}
-        onChange={onChange}
-        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-700"
-        placeholder={placeholder}
-      />
-    </div>
-  );
 
   if (isLoading)
     return (
@@ -184,7 +189,8 @@ const IssuerPage: React.FC = () => {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 space-y-6">
           <GlassCard className="relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10 bg-linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px) bg-length:24px_24px"></div>
+            {/* FIX 2: Tambahkan pointer-events-none agar background tidak menghalangi klik */}
+            <div className="absolute inset-0 opacity-10 bg-linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px) bg-length:24px_24px pointer-events-none"></div>
 
             <div
               onDragOver={(e) => {
@@ -194,7 +200,7 @@ const IssuerPage: React.FC = () => {
               onDragLeave={() => setIsDragOver(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded-xl p-10 text-center transition-all cursor-pointer group
+              className={`relative border-2 border-dashed rounded-xl p-10 text-center transition-all cursor-pointer group z-10
                 ${isDragOver
                   ? "border-primary bg-primary/5 scale-[0.99]"
                   : "border-white/10 hover:border-primary/50 hover:bg-white/5"
@@ -288,12 +294,13 @@ const IssuerPage: React.FC = () => {
               </div>
             </div>
 
-            <form onSubmit={handleMint} className="mt-8 space-y-5">
+            {/* Form Input sekarang menggunakan component yang didefinisikan di luar */}
+            <form onSubmit={handleMint} className="mt-8 space-y-5 relative z-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <FormInput
                   label="Nama Penerima"
                   value={formData.name}
-                  onChange={(e: any) =>
+                  onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="Nama lengkap penerima"
@@ -302,7 +309,7 @@ const IssuerPage: React.FC = () => {
                   label="Tanggal Terbit"
                   type="date"
                   value={formData.eventDate}
-                  onChange={(e: any) =>
+                  onChange={(e) =>
                     setFormData({ ...formData, eventDate: e.target.value })
                   }
                 />
@@ -312,7 +319,7 @@ const IssuerPage: React.FC = () => {
                 <FormInput
                   label="Judul Sertifikat / Gelar"
                   value={formData.achievment}
-                  onChange={(e: any) =>
+                  onChange={(e) =>
                     setFormData({ ...formData, achievment: e.target.value })
                   }
                   placeholder="Contoh: Sarjana Komputer / Sertifikat Kompetensi Web3"
@@ -321,13 +328,12 @@ const IssuerPage: React.FC = () => {
                 <FormInput
                   label="Institusi / Penyelenggara"
                   value={formData.institution}
-                  onChange={(e: any) =>
+                  onChange={(e) =>
                     setFormData({ ...formData, institution: e.target.value })
                   }
                   placeholder="Nama Universitas atau Lembaga"
                 />
               </div>
-
 
               <div className="group">
                 <label className="block text-xs font-mono text-gray-500 mb-1 group-focus-within:text-primary transition-colors">
@@ -357,6 +363,7 @@ const IssuerPage: React.FC = () => {
           </GlassCard>
         </div>
 
+        {/* Sidebar History */}
         <div className="space-y-6">
           <GlassCard className="h-full flex flex-col">
             <div className="flex items-center gap-2 mb-6 text-white border-b border-white/10 pb-4">
@@ -382,7 +389,7 @@ const IssuerPage: React.FC = () => {
                     <div className="flex justify-between items-start mb-2">
                       <div className="max-w-2/3">
                         <p className="text-sm sm:text-base font-bold text-white group-hover:text-primary transition-colors">
-                          {record.metadata.name}
+                          {maskName(record.metadata.name)}
                         </p>
                         <p className="text-xs sm:text-sm text-gray-400">
                           {record.metadata.achievment}

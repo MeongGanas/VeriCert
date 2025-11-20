@@ -64,23 +64,41 @@ export const verifyCertificateAPI = async (
     return result.data;
 };
 
-export const getRecentCertificatesAPI = async (): Promise<
-    CertificateRecord[]
-> => {
-    const response = await fetch("/api/certificates/recent", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        cache: "no-store",
-    });
+export const getRecentCertificatesAPI = async (
+    page: number = 1,
+    limit: number = 10
+): Promise<{
+    data: CertificateRecord[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+}> => {
+    const response = await fetch(
+        `/api/certificates/recent?page=${page}&limit=${limit}`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cache: "no-store",
+        }
+    );
 
     const result = await response.json();
 
     if (!response.ok || !result.success) {
         console.error("API History Error:", result.error);
-        return [];
+        return {
+            data: [],
+            pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
+        };
     }
 
-    return result.data;
+    return {
+        data: result.data,
+        pagination: result.pagination,
+    };
 };

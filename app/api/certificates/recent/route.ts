@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -8,13 +8,26 @@ const supabase = createClient(
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "10");
+
+        const from = (page - 1) * limit;
+        const to = from + limit - 1;
+
+        const { count, error: countError } = await supabase
+            .from("certificates")
+            .select("*", { count: "exact", head: true });
+
+        if (countError) throw new Error(countError.message);
+
         const { data, error } = await supabase
             .from("certificates")
             .select("*")
             .order("timestamp", { ascending: false })
-            .limit(10);
+            .range(from, to);
 
         if (error) {
             throw new Error(error.message);
@@ -33,6 +46,12 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             data: formattedData,
+            pagination: {
+                page,
+                limit,
+                total: count || 0,
+                totalPages: Math.ceil((count || 0) / limit),
+            },
         });
     } catch (error: any) {
         return NextResponse.json(

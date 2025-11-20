@@ -8,12 +8,11 @@ import {
   Lock,
   Search,
   ShieldCheck,
-  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import GlassCard from "@/components/ui/GlassCard";
-import NeonButton from "@/components/ui/NeonButton";
+import Table from "@/components/Table";
 
 const Home: React.FC = () => {
   const containerVariants = {
@@ -30,7 +29,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center py-20 lg:py-32">
+    <div className="flex flex-col items-center justify-center py-20">
       <motion.div
         initial="hidden"
         animate="visible"
@@ -115,7 +114,7 @@ const Home: React.FC = () => {
 
         <motion.div
           variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-left mb-20"
         >
           {[
             {
@@ -149,6 +148,8 @@ const Home: React.FC = () => {
             </GlassCard>
           ))}
         </motion.div>
+
+        <Table itemVariants={itemVariants} />
       </motion.div>
     </div>
   );
