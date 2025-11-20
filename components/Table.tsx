@@ -38,7 +38,7 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
     };
 
     return (
-        <motion.div variants={itemVariants} className="w-full max-w-full md:max-w-5xl overflow-x-auto mx-auto">
+        <motion.div variants={itemVariants} className="w-full md:max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-2">
                     <Database className="text-primary h-6 w-6" />
