@@ -387,6 +387,9 @@ const IssuerPage: React.FC = () => {
                         <p className="text-xs sm:text-sm text-gray-400">
                           {record.metadata.achievment}
                         </p>
+                        <p className="text-xs sm:text-sm text-gray-400">
+                          {record.metadata.institution}
+                        </p>
                       </div>
                       <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${record.isValid ? "bg-green-500/20 text-green-400 border border-green-500/20 shadow-lg shadow-green-900/20" : "bg-red-500/20 text-red-400 border border-red-500/20 shadow-lg shadow-red-900/20"}`}>
                         {record.isValid ? (
