@@ -1,65 +1,22 @@
-import { GoogleGenAI, Type } from "@google/genai";
-import { CertificateMetadata } from "../types";
+import { CertificateMetadata } from "@/lib/types";
 
-export const extractCertificateDetails = async (
-  imageFile: File
+const extractCertificateDetailsAPI = async (
+    file: File
 ): Promise<Partial<CertificateMetadata>> => {
-  const base64Data = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(imageFile);
-    reader.onload = () => {
-      const result = reader.result as string;
-      const base64Content = result.split(",")[1];
-      resolve(base64Content);
-    };
-    reader.onerror = (error) => reject(error);
-  });
+    const formData = new FormData();
+    formData.append("file", file);
 
-  const ai = new GoogleGenAI({
-    apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY,
-  });
-
-  const model = "gemini-2.5-flash";
-
-  try {
-    const response = await ai.models.generateContent({
-      model,
-      contents: {
-        parts: [
-          {
-            inlineData: {
-              mimeType: imageFile.type,
-              data: base64Data,
-            },
-          },
-          {
-            text: "Analisis gambar sertifikat atau ijazah ini. Ekstrak data berikut: Nama Penerima (recipientName), Nama Institusi/Penyelenggara (issuerName), Judul Sertifikat/Gelar (certificateTitle), Tanggal Terbit (issueDate), Nomor Identitas/NIM/NIK (recipientId), dan Info Tambahan seperti Nilai/Predikat (additionalInfo). Jika tidak terlihat, kosongkan.",
-          },
-        ],
-      },
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            recipientName: { type: Type.STRING },
-            issuerName: { type: Type.STRING },
-            certificateTitle: { type: Type.STRING },
-            issueDate: { type: Type.STRING },
-            recipientId: { type: Type.STRING },
-            additionalInfo: { type: Type.STRING },
-          },
-          required: ["recipientName", "issuerName"],
-        },
-      },
+    const res = await fetch("/api/gemini/extract", {
+        method: "POST",
+        body: formData,
     });
 
-    const text = response.text;
-    if (!text) return {};
+    const json = await res.json();
 
-    return JSON.parse(text) as Partial<CertificateMetadata>;
-  } catch (error) {
-    console.error("Gemini Extraction Error:", error);
-    throw new Error("Gagal mengekstrak data dari gambar sertifikat.");
-  }
+    if (!res.ok || !json.success) {
+        throw new Error(json.error || "AI Extraction Failed");
+    }
+
+    return json.data;
 };
+export default extractCertificateDetailsAPI;

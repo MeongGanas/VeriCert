@@ -19,10 +19,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import GlassCard from "@/components/ui/GlassCard";
 import NeonButton from "@/components/ui/NeonButton";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
-import {
-  calculateFileHash,
-  verifyCertificateDirect,
-} from "@/lib/actions/blockChainService";
+import { calculateFileHash, verifyCertificateAPI } from '@/lib/actions/blockChainService';
 import { CertificateRecord } from "@/lib/types";
 
 export default function VerifyPage() {
@@ -46,7 +43,7 @@ export default function VerifyPage() {
       const fileHash = await calculateFileHash(file);
       console.log("File Hash:", fileHash);
 
-      const record = await verifyCertificateDirect(supabase, fileHash);
+      const record = await verifyCertificateAPI(fileHash);
 
       if (record) {
         setResult(record);
@@ -107,10 +104,9 @@ export default function VerifyPage() {
             onClick={() => fileInputRef.current?.click()}
             className={`
               relative border-2 border-dashed rounded-2xl p-12 text-center transition-all cursor-pointer group
-              ${
-                isDragOver
-                  ? "border-accent bg-accent/10 scale-[0.99]"
-                  : "border-white/10 hover:border-accent/50 hover:bg-white/5"
+              ${isDragOver
+                ? "border-accent bg-accent/10 scale-[0.99]"
+                : "border-white/10 hover:border-accent/50 hover:bg-white/5"
               }
             `}
           >
@@ -151,9 +147,8 @@ export default function VerifyPage() {
                 >
                   <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform border border-white/10 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
                     <Upload
-                      className={`w-10 h-10 ${
-                        isDragOver ? "text-white" : "text-accent"
-                      }`}
+                      className={`w-10 h-10 ${isDragOver ? "text-white" : "text-accent"
+                        }`}
                     />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">
@@ -198,41 +193,40 @@ export default function VerifyPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <InfoItem
-                          icon={User}
-                          label="Nama Penerima"
-                          value={result.metadata.recipientName}
-                        />
-                        <InfoItem
-                          icon={Award}
-                          label="Judul Sertifikat"
-                          value={result.metadata.certificateTitle}
-                        />
-                        <InfoItem
-                          icon={Hash}
-                          label="Nomor Identitas"
-                          value={result.metadata.recipientId}
-                        />
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-4">
+                          <InfoItem
+                            icon={User}
+                            label="Nama Penerima"
+                            value={result.metadata.name}
+                          />
+                          <InfoItem
+                            icon={Award}
+                            label="Judul Sertifikat"
+                            value={result.metadata.achievment}
+                          />
+                        </div>
+                        <div className="space-y-4">
+                          <InfoItem
+                            icon={Building2}
+                            label="Penerbit"
+                            value={result.metadata.institution}
+                          />
+                          <InfoItem
+                            icon={Calendar}
+                            label="Tanggal Terbit"
+                            value={result.metadata.eventDate}
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-4">
-                        <InfoItem
-                          icon={Building2}
-                          label="Penerbit"
-                          value={result.metadata.issuerName}
-                        />
-                        <InfoItem
-                          icon={Calendar}
-                          label="Tanggal Terbit"
-                          value={result.metadata.issueDate}
-                        />
+                      {result.metadata.description && (
                         <InfoItem
                           icon={Hash}
                           label="Info Tambahan"
-                          value={result.metadata.additionalInfo}
+                          value={result.metadata.description}
                         />
-                      </div>
+                      )}
                     </div>
 
                     <div className="mt-6 pt-4 border-t border-primary/20">
@@ -288,7 +282,7 @@ const InfoItem = ({
   label: string;
   value: string;
 }) => (
-  <div className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/5">
+  <div className="flex items-start gap-3 p-3 rounded-lg bg-white/5 border border-white/5 w-full">
     <Icon className="w-5 h-5 text-gray-400 mt-0.5" />
     <div>
       <p className="text-xs text-gray-500 uppercase tracking-wider mb-0.5">

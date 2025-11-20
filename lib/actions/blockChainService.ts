@@ -1,6 +1,4 @@
-import { SupabaseClient } from "@supabase/supabase-js";
 import { CertificateRecord, CertificateMetadata } from "@/lib/types";
-import { ethers } from "ethers";
 
 export const calculateFileHash = async (file: File): Promise<string> => {
     const arrayBuffer = await file.arrayBuffer();
@@ -12,103 +10,77 @@ export const calculateFileHash = async (file: File): Promise<string> => {
     return `0x${hashHex}`;
 };
 
-export const issueCertificateDirect = async (
-    supabase: SupabaseClient,
+export const issueCertificateAPI = async (
     metadata: CertificateMetadata,
     fileHash: string,
-    issuerId: string
+    issuerId: string,
+    file: File
 ): Promise<CertificateRecord> => {
-    const { data: existing, error: checkError } = await supabase
-        .from("certificates")
-        .select("hash")
-        .eq("hash", fileHash)
-        .maybeSingle();
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("hash", fileHash);
+    formData.append("issuerId", issuerId);
+    formData.append("metadata", JSON.stringify(metadata));
 
-    if (checkError) throw new Error(checkError.message);
+    const response = await fetch("/api/certificates/issue", {
+        method: "POST",
+        body: formData,
+    });
 
-    if (existing) {
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
         throw new Error(
-            "This document has already been registered on the blockchain."
+            result.error || "Gagal menerbitkan sertifikat via API."
         );
     }
 
-    const txHash = ethers.id(`${Date.now()}-${Math.random()}`);
-
-    const newRecord = {
-        id: crypto.randomUUID(),
-        hash: fileHash,
-        metadata: metadata,
-        timestamp: Date.now(),
-        tx_hash: txHash,
-        issuer: issuerId,
-        is_valid: true,
-    };
-
-    const { data, error } = await supabase
-        .from("certificates")
-        .insert([newRecord])
-        .select()
-        .single();
-
-    if (error) {
-        console.error("Supabase Insert Error:", error);
-        throw new Error(error.message || "Failed to issue certificate.");
-    }
-
-    return {
-        id: data.id,
-        hash: data.hash,
-        metadata: data.metadata,
-        timestamp: data.timestamp,
-        txHash: data.tx_hash,
-        issuer: data.issuer,
-    };
+    return result.data;
 };
 
-export const verifyCertificateDirect = async (
-    supabase: SupabaseClient,
+export const verifyCertificateAPI = async (
     fileHash: string
 ): Promise<CertificateRecord | null> => {
-    const { data, error } = await supabase
-        .from("certificates")
-        .select("*")
-        .eq("hash", fileHash)
-        .maybeSingle();
+    const response = await fetch("/api/certificates/verify", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            hash: fileHash,
+        }),
+    });
 
-    if (error) throw new Error(error.message);
-    if (!data) return null;
+    const result = await response.json();
 
-    return {
-        id: data.id,
-        hash: data.hash,
-        metadata: data.metadata,
-        timestamp: data.timestamp,
-        txHash: data.tx_hash,
-        issuer: data.issuer,
-    };
+    if (!response.ok) {
+        throw new Error(result.error || "Gagal memverifikasi dokumen.");
+    }
+
+    if (!result.valid) {
+        return null;
+    }
+
+    return result.data;
 };
 
-export const getRecentCertificates = async (
-    supabase: SupabaseClient
-): Promise<CertificateRecord[]> => {
-    const { data, error } = await supabase
-        .from("certificates")
-        .select("*")
-        .order("timestamp", { ascending: false })
-        .limit(10);
+export const getRecentCertificatesAPI = async (): Promise<
+    CertificateRecord[]
+> => {
+    const response = await fetch("/api/certificates/recent", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        cache: "no-store",
+    });
 
-    if (error) {
-        console.error("Error fetching history:", error);
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+        console.error("API History Error:", result.error);
         return [];
     }
 
-    return data.map((d) => ({
-        id: d.id,
-        hash: d.hash,
-        metadata: d.metadata,
-        timestamp: d.timestamp,
-        txHash: d.tx_hash,
-        issuer: d.issuer,
-        isValid: d.is_valid,
-    }));
+    return result.data;
 };

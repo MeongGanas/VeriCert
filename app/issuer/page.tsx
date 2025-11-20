@@ -11,6 +11,7 @@ import {
   X,
   Hash,
   History,
+  XCircle,
 } from "lucide-react";
 import {
   CertificateMetadata,
@@ -19,12 +20,8 @@ import {
 } from "@/lib/types";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
 import { useRouter } from "next/navigation";
-import { extractCertificateDetails } from "@/lib/actions/geminiServices";
-import {
-  calculateFileHash,
-  issueCertificateDirect,
-  getRecentCertificates,
-} from "@/lib/actions/blockChainService";
+import extractCertificateDetailsAPI from '@/lib/actions/geminiServices';
+import { calculateFileHash, issueCertificateAPI, getRecentCertificatesAPI } from '@/lib/actions/blockChainService';
 import GlassCard from "@/components/ui/GlassCard";
 import NeonButton from "@/components/ui/NeonButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,12 +38,11 @@ const IssuerPage: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<CertificateMetadata>({
-    recipientName: "",
-    recipientId: "",
-    issuerName: "",
-    issueDate: "",
-    certificateTitle: "",
-    additionalInfo: "",
+    name: '',
+    description: '',
+    institution: '',
+    eventDate: '',
+    achievment: ''
   });
 
   useEffect(() => {
@@ -57,7 +53,7 @@ const IssuerPage: React.FC = () => {
 
   const refreshHistory = async () => {
     if (supabase) {
-      const data = await getRecentCertificates(supabase);
+      const data = await getRecentCertificatesAPI();
       setHistory(data);
     }
   };
@@ -84,15 +80,14 @@ const IssuerPage: React.FC = () => {
   const runAIExtraction = async (imageFile: File) => {
     setAiStatus(GemAIStatus.ANALYZING);
     try {
-      const details = await extractCertificateDetails(imageFile);
+      const details = await extractCertificateDetailsAPI(imageFile);
       setFormData((prev) => ({
         ...prev,
-        recipientName: details.recipientName || "",
-        recipientId: details.recipientId || "",
-        issuerName: details.issuerName || "",
-        certificateTitle: details.certificateTitle || "",
-        issueDate: details.issueDate || "",
-        additionalInfo: details.additionalInfo || "",
+        name: details.name || "",
+        achievment: details.achievment || "",
+        eventDate: details.eventDate || "",
+        institution: details.institution || "",
+        description: details.description || "",
       }));
       setAiStatus(GemAIStatus.SUCCESS);
     } catch (error) {
@@ -113,16 +108,15 @@ const IssuerPage: React.FC = () => {
         ...formData,
       };
 
-      await issueCertificateDirect(supabase, finalData, hash, session.user.id);
+      await issueCertificateAPI(finalData, hash, session.user.id, file);
 
       setFile(null);
       setFormData({
-        recipientName: "",
-        recipientId: "",
-        issuerName: "",
-        issueDate: "",
-        certificateTitle: "",
-        additionalInfo: "",
+        name: '',
+        description: '',
+        institution: '',
+        eventDate: '',
+        achievment: ''
       });
       setAiStatus(GemAIStatus.IDLE);
       await refreshHistory();
@@ -201,10 +195,9 @@ const IssuerPage: React.FC = () => {
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
               className={`relative border-2 border-dashed rounded-xl p-10 text-center transition-all cursor-pointer group
-                ${
-                  isDragOver
-                    ? "border-primary bg-primary/5 scale-[0.99]"
-                    : "border-white/10 hover:border-primary/50 hover:bg-white/5"
+                ${isDragOver
+                  ? "border-primary bg-primary/5 scale-[0.99]"
+                  : "border-white/10 hover:border-primary/50 hover:bg-white/5"
                 }
               `}
             >
@@ -228,11 +221,10 @@ const IssuerPage: React.FC = () => {
                   >
                     <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-white/10 group-hover:border-primary/50 shadow-lg shadow-black/50">
                       <Upload
-                        className={`w-8 h-8 ${
-                          isDragOver
-                            ? "text-primary"
-                            : "text-gray-400 group-hover:text-white"
-                        }`}
+                        className={`w-8 h-8 ${isDragOver
+                          ? "text-primary"
+                          : "text-gray-400 group-hover:text-white"
+                          }`}
                       />
                     </div>
                     <p className="text-lg font-medium text-white">
@@ -300,57 +292,53 @@ const IssuerPage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <FormInput
                   label="Nama Penerima"
-                  value={formData.recipientName}
+                  value={formData.name}
                   onChange={(e: any) =>
-                    setFormData({ ...formData, recipientName: e.target.value })
+                    setFormData({ ...formData, name: e.target.value })
                   }
                   placeholder="Nama lengkap penerima"
                 />
                 <FormInput
-                  label="Nomor Identitas (NIM/NIK/No. Peserta)"
-                  value={formData.recipientId}
+                  label="Tanggal Terbit"
+                  type="date"
+                  value={formData.eventDate}
                   onChange={(e: any) =>
-                    setFormData({ ...formData, recipientId: e.target.value })
+                    setFormData({ ...formData, eventDate: e.target.value })
                   }
-                  placeholder="Contoh: 123456789"
                 />
               </div>
 
-              <FormInput
-                label="Judul Sertifikat / Gelar"
-                value={formData.certificateTitle}
-                onChange={(e: any) =>
-                  setFormData({ ...formData, certificateTitle: e.target.value })
-                }
-                placeholder="Contoh: Sarjana Komputer / Sertifikat Kompetensi Web3"
-              />
-
-              <FormInput
-                label="Institusi / Penyelenggara"
-                value={formData.issuerName}
-                onChange={(e: any) =>
-                  setFormData({ ...formData, issuerName: e.target.value })
-                }
-                placeholder="Nama Universitas atau Lembaga"
-              />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid sm:grid-cols-2 gap-5">
                 <FormInput
-                  label="Tanggal Terbit"
-                  type="date"
-                  value={formData.issueDate}
+                  label="Judul Sertifikat / Gelar"
+                  value={formData.achievment}
                   onChange={(e: any) =>
-                    setFormData({ ...formData, issueDate: e.target.value })
+                    setFormData({ ...formData, achievment: e.target.value })
                   }
+                  placeholder="Contoh: Sarjana Komputer / Sertifikat Kompetensi Web3"
                 />
+
                 <FormInput
-                  label="Info Tambahan (Nilai/Predikat/No. SK)"
-                  value={formData.additionalInfo}
+                  label="Institusi / Penyelenggara"
+                  value={formData.institution}
                   onChange={(e: any) =>
-                    setFormData({ ...formData, additionalInfo: e.target.value })
+                    setFormData({ ...formData, institution: e.target.value })
                   }
-                  placeholder="Contoh: IPK 3.80 atau Predikat Sangat Baik"
+                  placeholder="Nama Universitas atau Lembaga"
                 />
+              </div>
+
+
+              <div className="group">
+                <label className="block text-xs font-mono text-gray-500 mb-1 group-focus-within:text-primary transition-colors">
+                  Deskripsi / Info Tambahan (Nilai/Predikat/No. SK)
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 h-28 text-white text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-700"
+                  placeholder={"Contoh: IPK 3.80 atau Predikat Sangat Baik"}
+                ></textarea>
               </div>
 
               <div className="pt-4">
@@ -392,17 +380,26 @@ const IssuerPage: React.FC = () => {
                     className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-primary/30 hover:bg-white/10 transition-all group"
                   >
                     <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <p className="text-sm font-bold text-white group-hover:text-primary transition-colors">
-                          {record.metadata.recipientName}
+                      <div className="max-w-2/3">
+                        <p className="text-sm sm:text-base font-bold text-white group-hover:text-primary transition-colors">
+                          {record.metadata.name}
                         </p>
-                        <p className="text-xs text-gray-400">
-                          {record.metadata.certificateTitle}
+                        <p className="text-xs sm:text-sm text-gray-400">
+                          {record.metadata.achievment}
                         </p>
                       </div>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 border border-green-500/20 shadow-lg shadow-green-900/20">
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        MINTED
+                      <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${record.isValid ? "bg-green-500/20 text-green-400 border border-green-500/20 shadow-lg shadow-green-900/20" : "bg-red-500/20 text-red-400 border border-red-500/20 shadow-lg shadow-red-900/20"}`}>
+                        {record.isValid ? (
+                          <>
+                            <CheckCircle className="w-3 h-3 mr-1" />
+                            On-chain
+                          </>
+                        ) : (
+                          <>
+                            <XCircle className="w-3 h-3 mr-1" />
+                            Error Block
+                          </>
+                        )}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 pt-2 border-t border-white/5 mt-2">

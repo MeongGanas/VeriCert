@@ -35,19 +35,19 @@ const Navbar: React.FC = () => {
 
   const navItems = user
     ? [
-        {
-          name: "Dasbor",
-          href: "/issuer",
-          icon: <LayoutDashboard className="w-4 h-4" />,
-        },
-      ]
+      {
+        name: "Dashboard",
+        href: "/issuer",
+        icon: <LayoutDashboard className="w-4 h-4" />,
+      },
+    ]
     : [
-        {
-          name: "Verifikasi",
-          href: "/verify",
-          icon: <Search className="w-4 h-4" />,
-        },
-      ];
+      {
+        name: "Verifikasi",
+        href: "/verify",
+        icon: <Search className="w-4 h-4" />,
+      },
+    ];
 
   return (
     <motion.nav
@@ -71,11 +71,10 @@ const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-2 text-sm font-medium transition-all duration-300 px-4 py-2 rounded-full ${
-                  pathname === item.href
-                    ? "bg-white/10 text-primary border border-white/10"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
+                className={`flex items-center gap-2 text-sm font-medium transition-all duration-300 px-4 py-2 rounded-full ${pathname === item.href
+                  ? "bg-white/10 text-primary border border-white/10"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}
               >
                 {item.icon}
                 {item.name}
