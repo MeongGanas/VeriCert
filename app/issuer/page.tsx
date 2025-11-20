@@ -91,9 +91,7 @@ const IssuerPage: React.FC = () => {
 
   const handleFileSelection = async (selectedFile: File) => {
     setFile(selectedFile);
-    if (selectedFile.type.startsWith("image/")) {
-      await runAIExtraction(selectedFile);
-    }
+    await runAIExtraction(selectedFile);
   };
 
   const handleDrop = (e: React.DragEvent) => {
