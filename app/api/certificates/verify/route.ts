@@ -35,16 +35,6 @@ export async function POST(req: NextRequest) {
             });
         }
 
-        if (currentBlock.is_valid === false) {
-            return NextResponse.json({
-                success: true,
-                valid: false,
-                message:
-                    "ALERT: Dokumen ini telah ditandai INVALID oleh sistem (Tampered Record).",
-                data: currentBlock,
-            });
-        }
-
         const { data: prevBlock } = await supabase
             .from("certificates")
             .select("tx_hash")
@@ -70,10 +60,48 @@ export async function POST(req: NextRequest) {
             Object.keys(currentBlock.metadata).sort()
         );
 
-        const dataString = `${previousHash}-${currentBlock.hash}-${sortedMetadata}-${currentBlock.issuer}-${normalizedTimestamp}`;
+        const secretKey =
+            process.env.LEDGER_SECRET_KEY || process.env.SECRET_KEY || "";
+
+        const dataString = `${previousHash}-${currentBlock.hash}-${sortedMetadata}-${currentBlock.issuer}-${normalizedTimestamp}-${secretKey}`;
         const recalculatedTxHash = ethers.id(dataString);
 
         const isIntegrityValid = recalculatedTxHash === currentBlock.tx_hash;
+        const isMarkedInvalid = currentBlock.is_valid === false;
+
+        if (!isIntegrityValid || isMarkedInvalid) {
+            console.error(
+                `[SECURITY] Tampering detected/confirmed on Block ID: ${currentBlock.id}`
+            );
+
+            if (!isMarkedInvalid) {
+                await supabase
+                    .from("certificates")
+                    .update({ is_valid: false })
+                    .eq("id", currentBlock.id);
+            }
+
+            return NextResponse.json({
+                success: true,
+                valid: false,
+                tampered: true,
+                message:
+                    "PERINGATAN KRITIS: Data ditemukan tetapi Integritas Blockchain RUSAK. Data ini kemungkinan telah dimanipulasi secara ilegal.",
+                data: {
+                    id: currentBlock.id,
+                    hash: currentBlock.hash,
+                    metadata: currentBlock.metadata,
+                    timestamp: currentBlock.timestamp,
+                    txHash: currentBlock.tx_hash,
+                    issuer: currentBlock.issuer,
+                    isValid: false,
+                },
+                debug: {
+                    stored: currentBlock.tx_hash,
+                    calculated: recalculatedTxHash,
+                },
+            });
+        }
 
         const { data: nextBlock } = await supabase
             .from("certificates")
@@ -82,38 +110,6 @@ export async function POST(req: NextRequest) {
             .order("timestamp", { ascending: true })
             .limit(1)
             .maybeSingle();
-
-        if (!isIntegrityValid) {
-            console.error(
-                `[SECURITY] Tampering detected on Block ID: ${currentBlock.id}`
-            );
-
-            await supabase
-                .from("certificates")
-                .update({ is_valid: false })
-                .eq("id", currentBlock.id);
-
-            if (nextBlock) {
-                console.error(
-                    `[SECURITY] Invalidating Next Block ID: ${nextBlock.id} due to broken chain.`
-                );
-                await supabase
-                    .from("certificates")
-                    .update({ is_valid: false })
-                    .eq("id", nextBlock.id);
-            }
-
-            return NextResponse.json({
-                success: true,
-                valid: false,
-                message:
-                    "TAMPER DETECTED! Data integrity check failed. System has flagged this record and the next block as INVALID.",
-                debug: {
-                    stored: currentBlock.tx_hash,
-                    calculated: recalculatedTxHash,
-                },
-            });
-        }
 
         let isChainConnected = true;
         let nextBlockMessage = "Latest Block (Head)";
@@ -126,13 +122,11 @@ export async function POST(req: NextRequest) {
             ) {
                 nextNormalizedTimestamp += "Z";
             }
-
             const nextSortedMetadata = JSON.stringify(
                 nextBlock.metadata,
                 Object.keys(nextBlock.metadata).sort()
             );
-
-            const nextDataString = `${currentBlock.tx_hash}-${nextBlock.hash}-${nextSortedMetadata}-${nextBlock.issuer}-${nextNormalizedTimestamp}`;
+            const nextDataString = `${currentBlock.tx_hash}-${nextBlock.hash}-${nextSortedMetadata}-${nextBlock.issuer}-${nextNormalizedTimestamp}-${secretKey}`;
             const recalculatedNextHash = ethers.id(nextDataString);
 
             if (recalculatedNextHash === nextBlock.tx_hash) {
@@ -146,11 +140,10 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
             success: true,
             valid: true,
-            integrity: isIntegrityValid,
+            integrity: true,
             chainStatus: {
                 connected: isChainConnected,
                 message: nextBlockMessage,
-                previousBlockFound: !!prevBlock,
             },
             data: {
                 id: currentBlock.id,
@@ -159,7 +152,7 @@ export async function POST(req: NextRequest) {
                 timestamp: currentBlock.timestamp,
                 txHash: currentBlock.tx_hash,
                 issuer: currentBlock.issuer,
-                isValid: currentBlock.is_valid,
+                isValid: true,
             },
         });
     } catch (error: any) {

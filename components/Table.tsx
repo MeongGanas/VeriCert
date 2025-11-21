@@ -40,9 +40,11 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
     return (
         <motion.div variants={itemVariants} className="w-full md:max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <h2 className="font-bold text-white flex items-center gap-2">
                     <Database className="text-primary h-6 w-6" />
-                    Public Ledger Live Feed
+                    <span className="text-xl md:text-2xl">
+                        Public Ledger Live Feed
+                    </span>
                 </h2>
                 <span className="text-sm text-gray-400 font-mono bg-white/5 px-3 py-1 rounded-full border border-white/10">
                     Syncing...
@@ -90,7 +92,7 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
                                         </td>
                                         <td className="p-4 text-sm text-gray-300 hidden md:table-cell">
                                             <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs border border-primary/20">
-                                                {record.metadata.achievment}
+                                                {record.metadata.eventName}
                                             </span>
                                         </td>
                                         <td className="p-4">
@@ -109,7 +111,7 @@ export default function Table({ itemVariants }: { itemVariants: Variants }) {
                                                 {record.isValid ? (
                                                     <><CheckCircle className="w-3 h-3 mr-1" /> Valid</>
                                                 ) : (
-                                                    <><XCircle className="w-3 h-3 mr-1" /> Error</>
+                                                    <><XCircle className="w-3 h-3 mr-1" /> Editted</>
                                                 )}
                                             </span>
                                         </td>

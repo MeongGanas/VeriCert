@@ -1,8 +1,9 @@
 export interface CertificateMetadata {
     name: string;
     institution: string;
-    achievment: string;
+    eventName: string;
     eventDate: string;
+    predicate: string;
     description?: string;
 }
 

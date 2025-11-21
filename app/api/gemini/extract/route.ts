@@ -18,6 +18,20 @@ export async function POST(req: NextRequest) {
         const arrayBuffer = await file.arrayBuffer();
         const base64Data = Buffer.from(arrayBuffer).toString("base64");
 
+        const prompt = `
+        Analyze this academic certificate or achievement document carefully. 
+        Extract the following information with high precision:
+
+        1. **name**: The full name of the recipient/student. Ignore titles like "Mr.", "Ms." unless part of the name.
+        2. **institution**: The name of the organization, university, or school issuing the certificate.
+        3. **eventName**: The main title of the certificate (e.g., "Bachelor of Computer Science", "Web Development Bootcamp", "National Math Olympiad"). NOT "Certificate of Appreciation".
+        4. **eventDate**: The date of issue or event date. Format strictly as YYYY-MM-DD. If only month/year is available, use YYYY-MM-01.
+        5. **predicate**: The specific achievement level, grade, or rank (e.g., "Cum Laude", "First Place", "Distinction", "GPA 3.80"). If it's just a participation certificate, use "Participant".
+        6. **description**: A brief summary of what the certificate is about, including skills learned or competition details. Keep it under 200 characters.
+
+        If a field is not clearly visible, return an empty string "". Do not guess.
+        `;
+
         const model = "gemini-2.5-pro";
 
         const response = await ai.models.generateContent({
@@ -33,7 +47,7 @@ export async function POST(req: NextRequest) {
                             },
                         },
                         {
-                            text: "Analyze this certificate. Extract: name, institution (event organizer), event date (YYYY-MM-DD), achievement (predicate) and description (description of the event). Return JSON.",
+                            text: prompt,
                         },
                     ],
                 },
@@ -44,12 +58,13 @@ export async function POST(req: NextRequest) {
                     type: Type.OBJECT,
                     properties: {
                         name: { type: Type.STRING },
-                        achievment: { type: Type.STRING },
+                        eventName: { type: Type.STRING },
                         institution: { type: Type.STRING },
                         eventDate: { type: Type.STRING },
                         description: { type: Type.STRING },
+                        predicate: { type: Type.STRING },
                     },
-                    required: ["name", "institution", "achievment"],
+                    required: ["name", "institution", "eventName", "predicate"],
                 },
             },
         });

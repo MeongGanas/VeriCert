@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import SupabaseProvider from "@/lib/supabase/SupabaseProvider";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
         >
           <AnimatedBackground />
           <Navbar />
+          <Toaster />
 
           <main className="grow w-full">{children}</main>
         </body>

@@ -57,10 +57,6 @@ export const verifyCertificateAPI = async (
         throw new Error(result.error || "Gagal memverifikasi dokumen.");
     }
 
-    if (!result.valid) {
-        return null;
-    }
-
     return result.data;
 };
 

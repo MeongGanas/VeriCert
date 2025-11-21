@@ -61,16 +61,6 @@ export async function POST(req: NextRequest) {
         if (uploadError)
             throw new Error("Gagal upload file: " + uploadError.message);
 
-        const {
-            data: { publicUrl },
-        } = supabase.storage.from("certificates").getPublicUrl(fileName);
-
-        metadata = {
-            ...metadata,
-            fileUrl: publicUrl,
-            storagePath: fileName,
-        };
-
         const { data: lastBlock } = await supabase
             .from("certificates")
             .select("tx_hash")
@@ -88,7 +78,7 @@ export async function POST(req: NextRequest) {
             Object.keys(metadata).sort()
         );
 
-        const dataString = `${previousHash}-${hash}-${sortedMetadata}-${issuerId}-${timestamp}`;
+        const dataString = `${previousHash}-${hash}-${sortedMetadata}-${issuerId}-${timestamp}-${process.env.SECRET_KEY}`;
         const txHash = ethers.id(dataString);
 
         const newRecord = {

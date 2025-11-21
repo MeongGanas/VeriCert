@@ -6,56 +6,50 @@ import {
   Upload,
   FileCheck,
   FileX,
-  Loader2,
   Hash,
   ShieldCheck,
   Calendar,
   Award,
   User,
   Building2,
-  X,
+  FileWarning,
+  GraduationCap,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import GlassCard from "@/components/ui/GlassCard";
 import NeonButton from "@/components/ui/NeonButton";
-import { useSupabase } from "@/lib/supabase/SupabaseProvider";
 import { calculateFileHash, verifyCertificateAPI } from '@/lib/actions/blockChainService';
 import { CertificateRecord } from "@/lib/types";
 
 export default function VerifyPage() {
-  const { supabase } = useSupabase();
   const [isDragOver, setIsDragOver] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<CertificateRecord | null>(null);
   const [verificationStatus, setVerificationStatus] = useState<
-    "idle" | "valid" | "invalid"
+    "idle" | "check"
   >("idle");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleVerification = async (file: File) => {
     setIsLoading(true);
     setResult(null);
-    setVerificationStatus("idle");
+    setVerificationStatus("idle")
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
       const fileHash = await calculateFileHash(file);
-      console.log("File Hash:", fileHash);
 
       const record = await verifyCertificateAPI(fileHash);
 
       if (record) {
         setResult(record);
-        setVerificationStatus("valid");
-      } else {
-        setVerificationStatus("invalid");
       }
     } catch (error) {
       console.error("Verification Error:", error);
-      setVerificationStatus("invalid");
     } finally {
       setIsLoading(false);
+      setVerificationStatus("check")
     }
   };
 
@@ -165,105 +159,195 @@ export default function VerifyPage() {
         </GlassCard>
 
         <AnimatePresence>
-          {verificationStatus !== "idle" && !isLoading && (
+          {!isLoading && (
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               className="mt-8"
             >
-              {verificationStatus === "valid" && result ? (
-                <GlassCard className="border-primary/50 bg-primary/5 relative overflow-hidden">
-                  <div className="absolute top-0 right-0 p-4 opacity-20">
-                    <ShieldCheck className="w-32 h-32 text-primary" />
-                  </div>
-
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-4 mb-6 border-b border-primary/20 pb-4">
-                      <div className="p-3 bg-primary/20 rounded-full border border-primary/50">
-                        <FileCheck className="w-8 h-8 text-primary" />
+              {result ? (
+                <>
+                  {result.isValid ? (
+                    <GlassCard className="border-primary/50 bg-primary/5 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 opacity-20">
+                        <ShieldCheck className="w-32 h-32 text-primary" />
                       </div>
-                      <div>
-                        <h2 className="text-2xl font-bold text-white">
-                          Terverifikasi Valid
-                        </h2>
-                        <p className="text-primary-glow text-sm font-mono">
-                          Dokumen Asli & Terdaftar
-                        </p>
-                      </div>
-                    </div>
 
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-4 mb-6 border-b border-primary/20 pb-4">
+                          <div className="p-3 bg-primary/20 rounded-full border border-primary/50">
+                            <FileCheck className="w-8 h-8 text-primary" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold text-white">
+                              Terverifikasi Valid
+                            </h2>
+                            <p className="text-primary-glow text-sm font-mono">
+                              Dokumen Asli & Terdaftar
+                            </p>
+                          </div>
+                        </div>
+
                         <div className="space-y-4">
-                          <InfoItem
-                            icon={User}
-                            label="Nama Penerima"
-                            value={result.metadata.name}
-                          />
                           <InfoItem
                             icon={Award}
                             label="Judul Sertifikat"
-                            value={result.metadata.achievment}
+                            value={result.metadata.eventName}
                           />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-4">
+                              <InfoItem
+                                icon={User}
+                                label="Nama Penerima"
+                                value={result.metadata.name}
+                              />
+                              <InfoItem
+                                icon={GraduationCap}
+                                label="Pencapaian"
+                                value={result.metadata.predicate}
+                              />
+                            </div>
+                            <div className="space-y-4">
+                              <InfoItem
+                                icon={Building2}
+                                label="Penerbit"
+                                value={result.metadata.institution}
+                              />
+                              <InfoItem
+                                icon={Calendar}
+                                label="Tanggal Terbit"
+                                value={result.metadata.eventDate}
+                              />
+                            </div>
+                          </div>
+                          {result.metadata.description && (
+                            <InfoItem
+                              icon={Hash}
+                              label="Info Tambahan"
+                              value={result.metadata.description}
+                            />
+                          )}
                         </div>
-                        <div className="space-y-4">
-                          <InfoItem
-                            icon={Building2}
-                            label="Penerbit"
-                            value={result.metadata.institution}
-                          />
-                          <InfoItem
-                            icon={Calendar}
-                            label="Tanggal Terbit"
-                            value={result.metadata.eventDate}
-                          />
+
+                        <div className="mt-6 pt-4 border-t border-primary/20">
+                          <p className="text-xs text-gray-400 font-mono mb-1">
+                            Blockchain Transaction Hash:
+                          </p>
+                          <p className="text-xs text-primary break-all bg-primary/10 p-2 rounded border border-primary/20">
+                            {result.txHash}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">
+                            Timestamp:{" "}
+                            {new Date(result.timestamp).toLocaleString("id-ID")}
+                          </p>
                         </div>
                       </div>
-                      {result.metadata.description && (
-                        <InfoItem
-                          icon={Hash}
-                          label="Info Tambahan"
-                          value={result.metadata.description}
-                        />
-                      )}
-                    </div>
+                    </GlassCard>
+                  ) : (
+                    <GlassCard className="border-yellow-500/50 bg-yellow-border-yellow-500/5 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 opacity-20">
+                        <FileWarning className="w-32 h-32 text-yellow-500 border-yellow-500" />
+                      </div>
 
-                    <div className="mt-6 pt-4 border-t border-primary/20">
-                      <p className="text-xs text-gray-400 font-mono mb-1">
-                        Blockchain Transaction Hash:
-                      </p>
-                      <p className="text-xs text-primary break-all bg-primary/10 p-2 rounded border border-primary/20">
-                        {result.txHash}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-2">
-                        Timestamp:{" "}
-                        {new Date(result.timestamp).toLocaleString("id-ID")}
-                      </p>
-                    </div>
-                  </div>
-                </GlassCard>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-4 mb-6 border-b border-yellow-500/20 pb-4">
+                          <div className="p-3 bg-yellow-500 border-yellow-500/20 rounded-full border">
+                            <FileCheck className="w-8 h-8 text-yellow-100 border-yellow-500" />
+                          </div>
+                          <div>
+                            <h2 className="text-2xl font-bold text-white">
+                              Data di Modifikasi
+                            </h2>
+                            <p className="text-yellow-500 text-sm font-mono">
+                              Dokumen Terdaftar tetapi di Modifikasi
+                            </p>
+                            <p className="text-xs text-slate-400">Kemungkinan data sebelumnya di modifikasi atau data yang sekarang.</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <InfoItem
+                            icon={Award}
+                            label="Judul Sertifikat"
+                            value={result.metadata.eventName}
+                          />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-4">
+                              <InfoItem
+                                icon={User}
+                                label="Nama Penerima"
+                                value={result.metadata.name}
+                              />
+                              <InfoItem
+                                icon={GraduationCap}
+                                label="Pencapaian"
+                                value={result.metadata.predicate}
+                              />
+                            </div>
+                            <div className="space-y-4">
+                              <InfoItem
+                                icon={Building2}
+                                label="Penerbit"
+                                value={result.metadata.institution}
+                              />
+                              <InfoItem
+                                icon={Calendar}
+                                label="Tanggal Terbit"
+                                value={result.metadata.eventDate}
+                              />
+                            </div>
+                          </div>
+                          {result.metadata.description && (
+                            <InfoItem
+                              icon={Hash}
+                              label="Info Tambahan"
+                              value={result.metadata.description}
+                            />
+                          )}
+                        </div>
+
+                        <div className="mt-6 pt-4 border-t border-primary/20">
+                          <p className="text-xs text-gray-400 font-mono mb-1">
+                            Blockchain Transaction Hash:
+                          </p>
+                          <p className="text-xs text-primary break-all bg-primary/10 p-2 rounded border border-primary/20">
+                            {result.txHash}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-2">
+                            Timestamp:{" "}
+                            {new Date(result.timestamp).toLocaleString("id-ID")}
+                          </p>
+                        </div>
+                      </div>
+                    </GlassCard>
+                  )}
+                </>
               ) : (
-                <GlassCard className="border-red-500/50 bg-red-500/5 flex flex-col items-center text-center py-10">
-                  <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/30">
-                    <FileX className="w-10 h-10 text-red-500" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-white mb-2">
-                    Dokumen Tidak Ditemukan
-                  </h2>
-                  <p className="text-gray-400 max-w-md">
-                    File ini tidak terdaftar di dalam blockchain kami, atau file
-                    telah dimodifikasi dari versi aslinya. Harap periksa kembali
-                    file Anda.
-                  </p>
-                  <NeonButton
-                    variant="secondary"
-                    onClick={() => setVerificationStatus("idle")}
-                    className="mt-6"
-                  >
-                    Coba Lagi
-                  </NeonButton>
-                </GlassCard>
+                <>
+                  {verificationStatus === "check" && (
+                    <GlassCard className="border-red-500/50 bg-red-500/5 flex flex-col items-center text-center py-10">
+                      <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/30">
+                        <FileX className="w-10 h-10 text-red-500" />
+                      </div>
+                      <h2 className="text-2xl font-bold text-white mb-2">
+                        Dokumen Tidak Ditemukan
+                      </h2>
+                      <p className="text-gray-400 max-w-md">
+                        File ini tidak terdaftar di dalam blockchain kami, atau file
+                        telah dimodifikasi dari versi aslinya. Harap periksa kembali
+                        file Anda.
+                      </p>
+                      <NeonButton
+                        variant="secondary"
+                        className="mt-6"
+                        onClick={() => setVerificationStatus("idle")}
+                      >
+                        Coba Lagi
+                      </NeonButton>
+                    </GlassCard>
+                  )}
+                </>
               )}
             </motion.div>
           )}
