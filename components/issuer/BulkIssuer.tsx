@@ -200,7 +200,7 @@ export default function BulkIssuer({ userId, onSuccess }: BulkIssuerProps) {
                                         disabled={item.status === 'success' || item.status === 'issuing'}
                                         value={item.metadata.eventName}
                                         onChange={(e) => handleBulkChange(item.id, 'eventName', e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-1.5 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
+                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -209,7 +209,7 @@ export default function BulkIssuer({ userId, onSuccess }: BulkIssuerProps) {
                                         disabled={item.status === 'success' || item.status === 'issuing'}
                                         value={item.metadata.name}
                                         onChange={(e) => handleBulkChange(item.id, 'name', e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-1.5 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
+                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -218,7 +218,7 @@ export default function BulkIssuer({ userId, onSuccess }: BulkIssuerProps) {
                                         disabled={item.status === 'success' || item.status === 'issuing'}
                                         value={item.metadata.predicate}
                                         onChange={(e) => handleBulkChange(item.id, 'predicate', e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-1.5 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
+                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -227,7 +227,7 @@ export default function BulkIssuer({ userId, onSuccess }: BulkIssuerProps) {
                                         disabled={item.status === 'success' || item.status === 'issuing'}
                                         value={item.metadata.institution}
                                         onChange={(e) => handleBulkChange(item.id, 'institution', e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-1.5 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
+                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
                                     />
                                 </div>
                                 <div className="space-y-1">
@@ -237,8 +237,15 @@ export default function BulkIssuer({ userId, onSuccess }: BulkIssuerProps) {
                                         disabled={item.status === 'success' || item.status === 'issuing'}
                                         value={item.metadata.eventDate}
                                         onChange={(e) => handleBulkChange(item.id, 'eventDate', e.target.value)}
-                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-1.5 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
+                                        className="w-full bg-black/30 border border-white/10 rounded-md px-3 py-2 text-xs text-white focus:border-primary/50 outline-none disabled:opacity-50"
                                     />
+                                </div>
+                                <div className="space-y-1 col-span-2">
+                                    <label className="block text-xs font-mono text-gray-500 mb-1 group-focus-within:text-primary transition-colors">
+                                        Deskripsi / Info Tambahan
+                                    </label>
+                                    <textarea value={item.metadata.description} onChange={(e) => handleBulkChange(item.id, 'description', e.target.value)}
+                                        className="w-full bg-black/30 border border-white/10 rounded-lg px-4 py-2.5 h-28 text-white text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-gray-700" placeholder="Contoh: IPK 3.80"></textarea>
                                 </div>
                             </div>
                         )}
