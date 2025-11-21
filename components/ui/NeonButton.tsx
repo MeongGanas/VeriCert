@@ -17,7 +17,7 @@ export default function NeonButton({
   ...props
 }: NeonButtonProps) {
   const baseStyles =
-    "relative px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden group";
+    "relative px-6 py-3 rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-2 overflow-hidden group cursor-pointer";
 
   const variants = {
     primary:
@@ -31,9 +31,8 @@ export default function NeonButton({
   return (
     <motion.button
       whileTap={{ scale: 0.95 }}
-      className={`${baseStyles} ${variants[variant]} ${className} ${
-        isLoading ? "opacity-70 cursor-not-allowed" : ""
-      }`}
+      className={`${baseStyles} ${variants[variant]} ${className} ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+        }`}
       disabled={isLoading}
       {...props}
     >
