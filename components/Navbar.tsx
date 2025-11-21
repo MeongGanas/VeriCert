@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  ShieldCheck,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -11,6 +10,7 @@ import {
   LogIn,
   UserPlus,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
@@ -35,32 +35,39 @@ const Navbar: React.FC = () => {
 
   const navItems = user
     ? [
-      {
-        name: "Dashboard",
-        href: "/issuer",
-        icon: <LayoutDashboard className="w-4 h-4" />,
-      },
-    ]
+        {
+          name: "Dashboard",
+          href: "/issuer",
+          icon: <LayoutDashboard className="w-4 h-4" />,
+        },
+      ]
     : [
-      {
-        name: "Verifikasi",
-        href: "/verify",
-        icon: <Search className="w-4 h-4" />,
-      },
-    ];
+        {
+          name: "Verifikasi",
+          href: "/verify",
+          icon: <Search className="w-4 h-4" />,
+        },
+      ];
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-50 w-full glass-panel border-b border-white/5 bg-black/50 supports-backdrop-filter:bg-black/20"
+      className="sticky top-0 z-50 w-full glass-panel border-b border-white/5 bg-black/50 supports-[backdrop-filter:blur(0px)]:bg-black/20"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           <Link href={"/"} className="flex items-center gap-3 group">
-            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors border border-primary/30">
-              <ShieldCheck className="h-6 w-6 text-primary" />
+            <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors border border-primary/30 relative">
+              <Image
+                src="/logo.webp"
+                alt="VeriCert Logo"
+                width={24}
+                height={24}
+                className="h-6 w-6 object-contain"
+              />
             </div>
+
             <span className="text-xl font-bold tracking-wider text-white group-hover:text-primary transition-colors">
               Veri<span className="text-primary">Cert</span>
             </span>
@@ -71,10 +78,11 @@ const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-2 text-sm font-medium transition-all duration-300 px-4 py-2 rounded-full ${pathname === item.href
-                  ? "bg-white/10 text-primary border border-white/10"
-                  : "text-gray-400 hover:text-white hover:bg-white/5"
-                  }`}
+                className={`flex items-center gap-2 text-sm font-medium transition-all duration-300 px-4 py-2 rounded-full ${
+                  pathname === item.href
+                    ? "bg-white/10 text-primary border border-white/10"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                }`}
               >
                 {item.icon}
                 {item.name}
