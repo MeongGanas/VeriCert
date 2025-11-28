@@ -3,27 +3,31 @@
     <img src="public/logo.webp" alt="VeriCert Logo" width="100" height="120">
   </a>
 
-  <h1 align="center">VeriCert</h1>
+  <br />
+  
+  <a href="https://github.com/meongganas/vericert">
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=40&pause=1000&color=38B2AC&center=true&vCenter=true&width=435&lines=VeriCert" alt="Typing SVG" />
+  </a>
 
   <p align="center">
-    <strong>Protokol Verifikasi Sertifikat Terdesentralisasi & Didukung AI</strong>
+    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=1000&color=38B2AC&center=true&vCenter=true&width=800&lines=Protokol+Verifikasi+Sertifikat+Terdesentralisasi+%26+Didukung+AI;Decentralized+%26+AI-Powered+Certificate+Verification+Protocol" alt="Typing SVG" />
   </p>
 
   <p align="center">
     <a href="https://nextjs.org">
-      <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js" />
+      <img src="https://img.shields.io/badge/Next.js-black?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
     </a>
     <a href="https://react.dev">
-      <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" />
+      <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" />
     </a>
     <a href="https://supabase.com">
-      <img src="https://img.shields.io/badge/Supabase-Database-green?style=for-the-badge&logo=supabase" alt="Supabase" />
+      <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" />
     </a>
     <a href="https://tailwindcss.com">
-      <img src="https://img.shields.io/badge/Tailwind-CSS-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind" />
+      <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
     </a>
     <a href="https://deepmind.google/technologies/gemini/">
-      <img src="https://img.shields.io/badge/Gemini-AI-8E75B2?style=for-the-badge&logo=googlebard" alt="Gemini AI" />
+      <img src="https://img.shields.io/badge/Gemini_AI-8E75B2?style=flat-square&logo=googlebard&logoColor=white" alt="Gemini AI" />
     </a>
   </p>
 
@@ -41,7 +45,7 @@
 
 ## ⚡ Ringkasan Project
 
-**VeriCert** adalah platform _full-stack_ modern yang dirancang untuk memecahkan masalah pemalsuan dokumen akademik. Dengan menggabungkan keamanan **Blockchain** (melalui cryptographic hashing) dan kecerdasan **Google Gemini AI**, VeriCert memungkinkan institusi untuk menerbitkan sertifikat digital yang **Immutable (Tak Terubah)**, **Permanent**, dan **Fraud-Proof**.
+**VeriCert** adalah platform modern yang dirancang untuk memecahkan masalah pemalsuan dokumen akademik maupun non akademik. Dengan menggabungkan keamanan **Blockchain** (melalui cryptographic hashing) dan kecerdasan **Google Gemini AI**, VeriCert memungkinkan institusi untuk menerbitkan sertifikat digital yang **Immutable (Tak Terubah)**, **Permanent**, dan **Fraud-Proof**.
 
 Dibangun dengan **Next.js 16** dan **Framer Motion**, aplikasi ini menawarkan pengalaman pengguna yang fluid, responsif, dan penuh animasi interaktif.
 
@@ -70,22 +74,22 @@ Dibangun dengan **Next.js 16** dan **Framer Motion**, aplikasi ini menawarkan pe
 
 <div align="center">
 
-### 🌌 Landing Page
+### Landing Page
 
 _Halaman depan futuristik dengan animasi blob dan glassmorphism._
 <img src="/public/dokumentasi/landing-page.jpg" alt="Landing Page" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
 
-### 👨‍💻 Issuer Dashboard & AI Extraction
+### Issuer Dashboard & AI Extraction
 
 _Dasbor penerbit untuk upload sertifikat. Lihat bagaimana sistem menangani single & bulk upload._
 <img src="/public/dokumentasi/issuer-dashboard.jpg" alt="Issuer Dashboard" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
 
-### 🔍 Public Verification
+### Public Verification
 
 _Halaman verifikasi publik. Siapapun dapat mengecek keaslian dokumen tanpa login._
 <img src="/public/dokumentasi/public-verification.jpg" alt="Verification Page" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
 
-### 🔐 Authentication (Login & Signup)
+### Authentication (Login & Signup)
 
 _Sistem autentikasi aman untuk Institusi Penerbit._
 
@@ -98,6 +102,8 @@ _Sistem autentikasi aman untuk Institusi Penerbit._
 
 ---
 
+<div align="center">
+
 ## 🛠️ Teknologi yang Digunakan
 
 | Kategori            | Teknologi                                  |
@@ -106,9 +112,11 @@ _Sistem autentikasi aman untuk Institusi Penerbit._
 | **Language**        | TypeScript                                 |
 | **Styling**         | Tailwind CSS v4, Framer Motion (Animation) |
 | **Database & Auth** | Supabase                                   |
-| **AI Model**        | Google Gemini 1.5 Flash/Pro                |
+| **AI Model**        | Google Gemini                              |
 | **Security**        | Ethers.js (Hashing), SHA-256               |
 | **Icons**           | Lucide React                               |
+
+</div>
 
 ---
 
