@@ -83,13 +83,13 @@ const IssuerPage: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          <GlassCard className="h-full flex flex-col">
+          <GlassCard className="h-full max-h-[600px] flex flex-col">
             <div className="flex items-center gap-2 mb-6 text-white border-b border-white/10 pb-4">
               <History className="w-5 h-5 text-accent" />
               <h2 className="text-lg font-bold">Riwayat Penerbitan</h2>
             </div>
 
-            <div className="grow overflow-y-auto pr-2 space-y-3 max-h-[600px] custom-scrollbar">
+            <div className="grow overflow-y-auto pr-2 space-y-3 custom-scrollbar">
               {history.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-40 text-gray-500 border border-dashed border-white/10 rounded-xl">
                   <AlertCircle className="w-8 h-8 mb-2 opacity-50" />
