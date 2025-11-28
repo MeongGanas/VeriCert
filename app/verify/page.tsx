@@ -20,6 +20,7 @@ import GlassCard from "@/components/ui/GlassCard";
 import NeonButton from "@/components/ui/NeonButton";
 import { calculateFileHash, verifyCertificateAPI } from '@/lib/actions/blockChainService';
 import { CertificateRecord } from "@/lib/types";
+import { format } from "path";
 
 export default function VerifyPage() {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -44,6 +45,8 @@ export default function VerifyPage() {
 
       if (record) {
         setResult(record);
+
+        console.log(record)
       }
     } catch (error) {
       console.error("Verification Error:", error);
@@ -59,6 +62,20 @@ export default function VerifyPage() {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleVerification(e.dataTransfer.files[0]);
     }
+  };
+
+  const formatDateID = (dateString: string) => {
+    if (!dateString) return "-";
+
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) return dateString;
+
+    return date.toLocaleDateString("id-ID", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    });
   };
 
   return (
@@ -217,7 +234,7 @@ export default function VerifyPage() {
                               <InfoItem
                                 icon={Calendar}
                                 label="Tanggal Terbit"
-                                value={result.metadata.eventDate}
+                                value={formatDateID(result.metadata.eventDate)}
                               />
                             </div>
                           </div>
@@ -239,7 +256,7 @@ export default function VerifyPage() {
                           </p>
                           <p className="text-xs text-gray-500 mt-2">
                             Timestamp:{" "}
-                            {new Date(result.timestamp).toLocaleString("id-ID")}
+                            {formatDateID(result.timestamp)}
                           </p>
                         </div>
                       </div>
@@ -294,7 +311,7 @@ export default function VerifyPage() {
                               <InfoItem
                                 icon={Calendar}
                                 label="Tanggal Terbit"
-                                value={new Date(result.metadata.eventDate).toLocaleString("id-ID")}
+                                value={formatDateID(result.metadata.eventDate)}
                               />
                             </div>
                           </div>

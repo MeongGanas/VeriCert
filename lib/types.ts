@@ -11,7 +11,7 @@ export interface CertificateRecord {
     id: string;
     hash: string;
     metadata: CertificateMetadata;
-    timestamp: number;
+    timestamp: string;
     txHash: string;
     issuer: string;
     isValid: string;
