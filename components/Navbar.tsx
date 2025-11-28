@@ -35,19 +35,19 @@ const Navbar: React.FC = () => {
 
   const navItems = user
     ? [
-        {
-          name: "Dashboard",
-          href: "/issuer",
-          icon: <LayoutDashboard className="w-4 h-4" />,
-        },
-      ]
+      {
+        name: "Dashboard",
+        href: "/issuer",
+        icon: <LayoutDashboard className="w-4 h-4" />,
+      },
+    ]
     : [
-        {
-          name: "Verifikasi",
-          href: "/verify",
-          icon: <Search className="w-4 h-4" />,
-        },
-      ];
+      {
+        name: "Verifikasi",
+        href: "/verify",
+        icon: <Search className="w-4 h-4" />,
+      },
+    ];
 
   return (
     <motion.nav
@@ -78,11 +78,10 @@ const Navbar: React.FC = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center gap-2 text-sm font-medium transition-all duration-300 px-4 py-2 rounded-full ${
-                  pathname === item.href
-                    ? "bg-white/10 text-primary border border-white/10"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
-                }`}
+                className={`flex items-center gap-2 text-sm font-medium transition-all duration-300 px-4 py-3 rounded-full ${pathname === item.href
+                  ? "bg-white/10 text-primary border border-white/10"
+                  : "text-gray-400 hover:text-white hover:bg-white/5"
+                  }`}
               >
                 {item.icon}
                 {item.name}
@@ -110,7 +109,7 @@ const Navbar: React.FC = () => {
             ) : (
               <div className="flex items-center gap-3 pl-2">
                 <Link href="/login">
-                  <button className="flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/5 border border-transparent hover:border-white/10">
+                  <button className="flex items-center gap-2 px-5 py-3 text-sm font-medium text-gray-300 hover:text-white transition-colors rounded-full hover:bg-white/5 border border-transparent hover:border-white/10 cursor-pointer">
                     <LogIn className="w-4 h-4" />
                     Masuk
                   </button>
@@ -162,7 +161,7 @@ const Navbar: React.FC = () => {
               {user ? (
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl"
+                  className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-xl cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                   Disconnect
@@ -172,6 +171,7 @@ const Navbar: React.FC = () => {
                   <Link
                     href="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    className="cursor-pointer"
                   >
                     <div className="w-full flex items-center justify-center gap-2 px-4 py-3 text-gray-300 border border-white/10 rounded-xl hover:bg-white/5 mb-3">
                       <LogIn className="w-4 h-4" />
@@ -181,6 +181,7 @@ const Navbar: React.FC = () => {
                   <Link
                     href="/signup"
                     onClick={() => setIsMobileMenuOpen(false)}
+                    className="cursor-pointer"
                   >
                     <NeonButton className="w-full justify-center rounded-xl">
                       <UserPlus className="w-4 h-4 mr-2" />
