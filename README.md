@@ -15,19 +15,19 @@
 
   <p align="center">
     <a href="https://nextjs.org">
-      <img src="https://img.shields.io/badge/Next.js-black?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" />
+      <img src="https://img.shields.io/badge/Next.js-black?style=flat-square&logo=next.js&logoColor=white" alt="Next.js" height="40" />
     </a>
     <a href="https://react.dev">
-      <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" />
+      <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" height="40" />
     </a>
     <a href="https://supabase.com">
-      <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" />
+      <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase" height="40" />
     </a>
     <a href="https://tailwindcss.com">
-      <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+      <img src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" height="40" />
     </a>
     <a href="https://deepmind.google/technologies/gemini/">
-      <img src="https://img.shields.io/badge/Gemini_AI-8E75B2?style=flat-square&logo=googlebard&logoColor=white" alt="Gemini AI" />
+      <img src="https://img.shields.io/badge/Gemini_AI-8E75B2?style=flat-square&logo=googlebard&logoColor=white" alt="Gemini AI" height="40" />
     </a>
   </p>
 
