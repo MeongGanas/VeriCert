@@ -73,25 +73,25 @@ Dibangun dengan **Next.js 16** dan **Framer Motion**, aplikasi ini menawarkan pe
 ### 🌌 Landing Page
 
 _Halaman depan futuristik dengan animasi blob dan glassmorphism._
-<img src="WhatsApp Image 2025-11-28 at 15.19.30_96da2c11.jpg" alt="Landing Page" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
+<img src="/public/dokumentasi/landing-page.jpg" alt="Landing Page" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
 
 ### 👨‍💻 Issuer Dashboard & AI Extraction
 
 _Dasbor penerbit untuk upload sertifikat. Lihat bagaimana sistem menangani single & bulk upload._
-<img src="WhatsApp Image 2025-11-28 at 15.19.29_060e7266.jpg" alt="Issuer Dashboard" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
+<img src="/public/dokumentasi/issuer-dashboard.jpg" alt="Issuer Dashboard" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
 
 ### 🔍 Public Verification
 
 _Halaman verifikasi publik. Siapapun dapat mengecek keaslian dokumen tanpa login._
-<img src="WhatsApp Image 2025-11-28 at 15.19.28_9376beba.jpg" alt="Verification Page" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
+<img src="/public/dokumentasi/public-verification.jpg" alt="Verification Page" width="90%" style="border-radius: 10px; border: 1px solid #333; margin-bottom: 20px;">
 
 ### 🔐 Authentication (Login & Signup)
 
 _Sistem autentikasi aman untuk Institusi Penerbit._
 
 <div style="display: flex; justify-content: center; gap: 10px;">
-  <img src="WhatsApp Image 2025-11-28 at 15.19.29_3a167b32.jpg" alt="Login Page" width="48%" style="border-radius: 10px; border: 1px solid #333;">
-  <img src="WhatsApp Image 2025-11-28 at 15.19.29_1192961b.jpg" alt="Signup Page" width="48%" style="border-radius: 10px; border: 1px solid #333;">
+  <img src="/public/dokumentasi/login.jpg" alt="Login Page" width="48%" style="border-radius: 10px; border: 1px solid #333;">
+  <img src="/public/dokumentasi/signup.jpg" alt="Signup Page" width="48%" style="border-radius: 10px; border: 1px solid #333;">
 </div>
 
 </div>
