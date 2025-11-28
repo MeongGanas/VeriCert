@@ -20,7 +20,6 @@ import GlassCard from "@/components/ui/GlassCard";
 import NeonButton from "@/components/ui/NeonButton";
 import { calculateFileHash, verifyCertificateAPI } from '@/lib/actions/blockChainService';
 import { CertificateRecord } from "@/lib/types";
-import { format } from "path";
 
 export default function VerifyPage() {
   const [isDragOver, setIsDragOver] = useState(false);
@@ -45,8 +44,6 @@ export default function VerifyPage() {
 
       if (record) {
         setResult(record);
-
-        console.log(record)
       }
     } catch (error) {
       console.error("Verification Error:", error);
