@@ -174,27 +174,8 @@ Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
 ---
 
-## 🔮 Roadmap
-
-- [x] Otentikasi Penerbit (Institusi)
-- [x] Penerbitan Sertifikat Single (AI Autofill)
-- [x] Verifikasi Publik via File Hash
-- [x] Bulk Upload (Penerbitan Massal)
-- [ ] Integrasi Dompet Web3 (Metamask)
-- [ ] Penerbitan Sertifikat sebagai NFT (Polygon)
-- [ ] Dashboard Analitik untuk Institusi
-
 <br />
 
 <div align="center">
-  <p>Dibuat dengan ❤️ dan ☕ oleh <b>Haerul</b></p>
   <p>© 2025 VeriCert. All rights reserved.</p>
 </div>
-
----
-
-### Tips Tambahan untuk Membuatnya Lebih Keren:
-
-1.  **Struktur Folder Gambar:** Pastikan gambar-gambar seperti `WhatsApp Image...` diubah namanya menjadi lebih pendek (misal: `landing.jpg`, `dashboard.jpg`) dan diletakkan di folder root atau `public/images` agar link gambar di atas berfungsi sempurna.
-2.  **Logo:** Jika file `public/logo.webp` sudah ada di project kamu (berdasarkan file yang kamu kirim), kode di atas akan otomatis menampilkannya.
-3.  **Animasi:** Karena ini file Markdown, animasi tidak bisa berjalan langsung kecuali menggunakan GIF. Namun, deskripsi dan _badges_ yang saya gunakan memberikan kesan dinamis dan aktif.
