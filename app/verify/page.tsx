@@ -294,7 +294,7 @@ export default function VerifyPage() {
                               <InfoItem
                                 icon={Calendar}
                                 label="Tanggal Terbit"
-                                value={result.metadata.eventDate}
+                                value={new Date(result.metadata.eventDate).toLocaleString("id-ID")}
                               />
                             </div>
                           </div>
