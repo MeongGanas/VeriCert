@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -54,7 +54,7 @@ const InputField = ({
 );
 
 export default function SignUpPage() {
-  const { supabase } = useSupabase();
+  const { supabase, isLoading, session } = useSupabase();
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -68,6 +68,13 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && session) {
+      router.replace("/issuer");
+    }
+  }, [session, isLoading, router]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

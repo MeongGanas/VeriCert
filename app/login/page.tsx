@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSupabase } from "@/lib/supabase/SupabaseProvider";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -9,7 +9,7 @@ import NeonButton from "@/components/ui/NeonButton";
 import { KeyRound, Mail, Lock } from "lucide-react";
 
 export default function LoginPage() {
-  const { supabase } = useSupabase();
+  const { supabase, isLoading, session } = useSupabase();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,6 +33,12 @@ export default function LoginPage() {
       router.push("/issuer");
     }
   };
+
+  useEffect(() => {
+    if (!isLoading && session) {
+      router.replace("/issuer");
+    }
+  }, [session, isLoading, router]);
 
   return (
     <div className="flex h-[calc(100vh-6rem)] items-center justify-center">
