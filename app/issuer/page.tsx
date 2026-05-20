@@ -83,7 +83,7 @@ const IssuerPage: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          <GlassCard className="h-full max-h-[600px] flex flex-col">
+          <GlassCard className="h-full max-h-150 flex flex-col">
             <div className="flex items-center gap-2 mb-6 text-white border-b border-white/10 pb-4">
               <History className="w-5 h-5 text-accent" />
               <h2 className="text-lg font-bold">Riwayat Penerbitan</h2>

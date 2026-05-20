@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
         if (!file) {
             return NextResponse.json(
                 { error: "No file uploaded" },
-                { status: 400 }
+                { status: 400 },
             );
         }
 
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
         console.error("Gemini API Error:", error);
         return NextResponse.json(
             { success: false, error: error.message },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }
